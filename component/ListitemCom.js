@@ -6,17 +6,34 @@ import {
   Image,
   Dimensions,
   SafeAreaView,
+  Animated,
 } from "react-native";
 
 const WIDTH = Dimensions.get("window").width;
 
 const HEIGHT = Dimensions.get("window").height;
 
-export default function ListitemCom({ imageUri, heading, description }) {
+export default function ListitemCom({
+  imageUri,
+  heading,
+  description,
+  index,
+  ScrollX,
+}) {
+  //We have to create a Input range so that we can scale the image.
+  const inputRange = [(index - 1) * WIDTH, index * WIDTH, (index + 1) * WIDTH];
+  const scale = ScrollX.interpolate({
+    inputRange,
+    outputRange: [0, 1, 0],
+  });
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <Image source={imageUri} style={styles.imgstyle} />
+        <Animated.Image
+          source={imageUri}
+          style={[styles.imgstyle, { transform: [{ scale }] }]}
+        />
         <View style={styles.textcontainer}>
           <Text style={styles.heading}>{heading}</Text>
           <Text style={styles.description}>{description}</Text>
