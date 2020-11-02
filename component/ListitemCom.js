@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Animated,
 } from "react-native";
+import data from "../Data/data";
 
 const WIDTH = Dimensions.get("window").width;
 
@@ -22,8 +23,26 @@ export default function ListitemCom({
 }) {
   //We have to create a Input range so that we can scale the image.
   const inputRange = [(index - 1) * WIDTH, index * WIDTH, (index + 1) * WIDTH];
+  const inputRangeOpacity = [
+    (index - 0.2) * WIDTH,
+    index * WIDTH,
+    (index + 0.2) * WIDTH,
+  ];
   const scale = ScrollX.interpolate({
     inputRange,
+    outputRange: [0, 1, 0],
+  });
+  const translateXheading = ScrollX.interpolate({
+    inputRange,
+    outputRange: [WIDTH * 0.2, 0, -WIDTH * 0.2],
+  });
+
+  const translateXdescription = ScrollX.interpolate({
+    inputRange,
+    outputRange: [WIDTH * 0.8, 0, -WIDTH * 0.8],
+  });
+  const opacity = ScrollX.interpolate({
+    inputRange: inputRangeOpacity,
     outputRange: [0, 1, 0],
   });
 
@@ -32,11 +51,32 @@ export default function ListitemCom({
       <View style={styles.container}>
         <Animated.Image
           source={imageUri}
+          an
           style={[styles.imgstyle, { transform: [{ scale }] }]}
         />
         <View style={styles.textcontainer}>
-          <Text style={styles.heading}>{heading}</Text>
-          <Text style={styles.description}>{description}</Text>
+          <Animated.Text
+            style={[
+              styles.heading,
+              {
+                opacity,
+                transform: [{ translateX: translateXheading }],
+              },
+            ]}
+          >
+            {heading}
+          </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.description,
+              {
+                opacity,
+                transform: [{ translateX: translateXdescription }],
+              },
+            ]}
+          >
+            {description}
+          </Animated.Text>
         </View>
       </View>
     </SafeAreaView>
@@ -64,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 0.5,
   },
   heading: {
-    color: "#444",
+    color: "#fff",
     textTransform: "uppercase",
     fontSize: 24,
     letterSpacing: 2,
@@ -73,7 +113,7 @@ const styles = StyleSheet.create({
     fontFamily: "nunito-bold",
   },
   description: {
-    color: "#ccc",
+    color: "#000",
     fontWeight: "600",
     textAlign: "left",
     width: WIDTH * 0.75,
